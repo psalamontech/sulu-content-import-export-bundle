@@ -1,0 +1,42 @@
+{
+    "name": "psalamon/sulu-content-import-export-bundle",
+    "description": "JSON export/import admin tab for Sulu pages, snippets, and articles.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SuluContentImportExportBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SuluContentImportExportBundle\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "sulu/sulu": "^2.6",
+        "symfony/config": "^6.4 || ^7.0",
+        "symfony/dependency-injection": "^6.4 || ^7.0",
+        "symfony/framework-bundle": "^6.4 || ^7.0",
+        "symfony/http-foundation": "^6.4 || ^7.0",
+        "symfony/http-kernel": "^6.4 || ^7.0",
+        "symfony/routing": "^6.4 || ^7.0"
+    },
+    "require-dev": {
+        "jackalope/jackalope-doctrine-dbal": "^1.8 || ^2.0",
+        "phpunit/phpunit": "^10.5 || ^11.0"
+    },
+    "extra": {
+        "symfony": {
+            "bundle": {
+                "SuluContentImportExportBundle\\SuluContentImportExportBundle": [
+                    "all"
+                ]
+            }
+        },
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        }
+    }
+}

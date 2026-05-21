@@ -1,0 +1,13 @@
+{
+    "name": "sulu-content-import-export-bundle-admin",
+    "private": true,
+    "scripts": {
+        "test:requester": "node tests/exportImportRequester.test.js"
+    },
+    "dependencies": {
+        "mobx": "^4.0.0",
+        "mobx-react": "^5.0.0",
+        "react": "^17.0.0",
+        "react-dom": "^17.0.0"
+    }
+}

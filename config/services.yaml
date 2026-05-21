@@ -1,0 +1,44 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    SuluContentImportExportBundle\:
+        resource: '../src/*'
+        exclude:
+            - '../src/DependencyInjection/'
+
+    Sulu\Component\DocumentManager\DocumentManagerInterface: '@sulu_document_manager.document_manager'
+    Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface: '@sulu_page.structure.factory'
+
+    SuluContentImportExportBundle\Admin\ContentImportExportAdmin:
+        arguments:
+            $resourceConfig: '%sulu_content_import_export.resources%'
+
+    SuluContentImportExportBundle\Controller\Admin\ContentJsonController:
+        arguments:
+            $defaultLocale: '%sulu_content_import_export.default_locale%'
+            $csrfTokenId: '%sulu_content_import_export.csrf_token_id%'
+
+    SuluContentImportExportBundle\Resource\ResourceRegistry:
+        arguments:
+            $resourceConfig: '%sulu_content_import_export.resources%'
+
+    SuluContentImportExportBundle\Security\SnippetPermissionChecker:
+        tags:
+            - { name: 'sulu_content_import_export.permission_checker', resource: 'snippet' }
+
+    SuluContentImportExportBundle\Security\PagePermissionChecker:
+        tags:
+            - { name: 'sulu_content_import_export.permission_checker', resource: 'page' }
+
+    SuluContentImportExportBundle\Security\ArticlePermissionChecker:
+        class: SuluContentImportExportBundle\Security\ArticlePermissionChecker
+        tags:
+            - { name: 'sulu_content_import_export.permission_checker', resource: 'article' }
+
+    SuluContentImportExportBundle\Security\PermissionCheckerRegistry:
+        arguments:
+            $checkers: !tagged_iterator
+                tag: 'sulu_content_import_export.permission_checker'
+                index_by: 'resource'

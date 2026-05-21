@@ -1,0 +1,3 @@
+sulu_content_import_export_admin:
+    resource: ../src/Controller/Admin/
+    type: attribute
