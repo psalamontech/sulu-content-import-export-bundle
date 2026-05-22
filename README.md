@@ -1,29 +1,82 @@
 # Sulu Content Import/Export Bundle
 
-Reusable JSON export/import admin tab for Sulu `page`, `snippet`, and optional `article` documents.
+JSON export/import admin tab for Sulu `page`, `snippet`, and optional `article` documents.
 
-## Private Composer Usage
+Adds an **Export / Import** tab to each content document in the Sulu admin. The tab shows the document's JSON payload, lets you edit and validate it, and saves it back as a draft.
 
-This repository is intended to be consumed from another Sulu application as a private Composer package through a VCS repository entry. The recommended host integration is:
+## Requirements
 
-- install the bundle through Composer
-- import its admin routes and config
-- add a webpack alias in the host admin build
-- import `sulu-content-import-export-bundle/app` from the host `assets/admin/app.js`
-- rebuild the host Sulu admin
+- PHP 8.2+
+- Sulu 2.6+
+- Symfony 6.4 or 7.0
 
-## Status
+## Installation
 
-The bundle currently provides:
+See [docs/installation.md](docs/installation.md) for the full step-by-step guide.
 
-- shared backend services for load/save/validate
-- generic admin controller for page, snippet, and article
-- Sulu admin tab registration
-- locale switcher options taken from the Sulu localization system
-- bundle frontend source for the export/import view
-- unit tests for core helpers and requester
+Quick summary:
+
+```json
+// composer.json in host project
+{
+    "repositories": [
+        { "type": "vcs", "url": "git@github.com:your-org/sulu-content-import-export-bundle.git" }
+    ],
+    "require": {
+        "psalamon/sulu-content-import-export-bundle": "^0.1.0"
+    }
+}
+```
+
+After `composer require`:
+
+1. Import admin routes in `config/routes/sulu_content_import_export.yaml`
+2. Add webpack alias + `resolve.modules` in host `assets/admin/webpack.config.js`
+3. Import `sulu-content-import-export-bundle/app` in host `assets/admin/app.js`
+4. Rebuild host Sulu admin
+
+CSRF protection is configured automatically — no manual `config/packages/csrf.yaml` needed.
+
+## Configuration
+
+All resources are enabled by default. Override only when needed:
+
+```yaml
+# config/packages/sulu_content_import_export.yaml
+sulu_content_import_export:
+    resources:
+        page:
+            enabled: true
+        snippet:
+            enabled: true
+        article:
+            enabled: true
+            types: ['article', 'post']
+```
+
+Article support activates only when `sulu/article-bundle` is installed.
+
+## API endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/admin/content-json/{resource}/{id}` | Load document JSON |
+| `POST` | `/admin/content-json/{resource}/{id}/validate` | Validate structure |
+| `POST` | `/admin/content-json/{resource}/{id}` | Save content as draft |
+| `POST` | `/admin/content-json/{resource}/{id}/seo` | Save SEO fields as draft |
+
+`{resource}` is one of `page`, `snippet`, `article`.
+
+## Development
+
+```bash
+composer install
+./vendor/bin/phpunit
+```
+
+Tests: 28 / Assertions: 131.
 
 ## Docs
 
+- [Installation guide](docs/installation.md)
 - [Implementation plan](docs/implementation-plan.md)
-- [Installation](docs/installation.md)
