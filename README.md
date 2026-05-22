@@ -30,10 +30,12 @@ Quick summary:
 
 After `composer require`:
 
-1. Import admin routes in `config/routes/sulu_content_import_export.yaml`
-2. Add webpack alias + `resolve.modules` in host `assets/admin/webpack.config.js`
-3. Import `sulu-content-import-export-bundle/app` in host `assets/admin/app.js`
-4. Rebuild host Sulu admin
+```bash
+bin/console sulu-content-import-export:install
+cd assets/admin && npm run build
+```
+
+The install command creates the routes file, patches `webpack.config.js`, and adds the JS import automatically.
 
 CSRF protection is configured automatically — no manual `config/packages/csrf.yaml` needed.
 
