@@ -13,12 +13,16 @@ Add the repository and package requirement to the host application's `composer.j
         }
     ],
     "require": {
-        "psalamon/sulu-content-import-export-bundle": "dev-main"
+        "psalamon/sulu-content-import-export-bundle": "^0.1.0"
     }
 }
 ```
 
+If no tagged release exists yet, use `"dev-main"` as the version constraint.
+
 ## Backend
+
+**Required steps:**
 
 1. Require the bundle through Composer.
 2. If Symfony Flex does not register the bundle automatically, add `SuluContentImportExportBundle\\SuluContentImportExportBundle` to the host application's bundle config.
@@ -32,18 +36,9 @@ sulu_content_import_export:
 
 The bundle exposes `config/routes_admin.yaml` from the package root, so this import works without copying route files into the host application.
 
-4. Enable stateless CSRF checking for the configured token id:
+The bundle automatically configures stateless CSRF protection for its token id via `prepend()`. No manual CSRF config is needed.
 
-```yaml
-# config/packages/csrf.yaml
-framework:
-    csrf_protection:
-        stateless_token_ids:
-            - sulu_content_import_export
-        check_header: true
-```
-
-5. Configure the bundle:
+**Optional — override defaults:**
 
 ```yaml
 # config/packages/sulu_content_import_export.yaml
@@ -58,11 +53,28 @@ sulu_content_import_export:
             types: ['article', 'post']
 ```
 
+All resources are enabled by default. Omit this file entirely if the defaults are acceptable.
+
+If you need to override the CSRF token id or use a different stateless token, add:
+
+```yaml
+# config/packages/csrf.yaml
+framework:
+    csrf_protection:
+        stateless_token_ids:
+            - sulu_content_import_export
+        check_header: true
+```
+
 The language switcher uses the locales registered in the Sulu system, not a separate bundle-specific locale list.
 
 ## Admin Frontend
 
-Add a webpack alias in the host application's `assets/admin/webpack.config.js`:
+**Required steps:**
+
+Ensure the host `assets/admin/package.json` React, MobX, and CKEditor versions match those required by the installed `sulu/sulu` version. Version mismatches cause silent build failures or runtime errors.
+
+Add a webpack alias and module resolution path in the host application's `assets/admin/webpack.config.js`:
 
 ```js
 const path = require('path');
@@ -85,10 +97,16 @@ module.exports = (env, argv) => {
             '../../vendor/psalamon/sulu-content-import-export-bundle/assets/admin'
         ),
     };
+    config.resolve.modules = [
+        path.resolve(__dirname, 'node_modules'),
+        ...(config.resolve.modules || ['node_modules']),
+    ];
 
     return config;
 };
 ```
+
+The `resolve.modules` entry ensures that `sulu-admin-bundle` imports inside the bundle's vendor files resolve to the host's `node_modules` directory.
 
 Then import the bundle admin entrypoint from the host application's `assets/admin/app.js`:
 

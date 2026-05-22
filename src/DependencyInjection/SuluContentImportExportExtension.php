@@ -8,10 +8,21 @@ use Sulu\Bundle\ArticleBundle\Admin\ArticleAdmin;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-final class SuluContentImportExportExtension extends Extension
+final class SuluContentImportExportExtension extends Extension implements PrependExtensionInterface
 {
+    public function prepend(ContainerBuilder $container): void
+    {
+        $container->prependExtensionConfig('framework', [
+            'csrf_protection' => [
+                'stateless_token_ids' => ['sulu_content_import_export'],
+                'check_header' => true,
+            ],
+        ]);
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
