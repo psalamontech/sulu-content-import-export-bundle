@@ -21,6 +21,7 @@ final class ContentImportExportAdmin extends Admin
     public function __construct(
         private readonly ViewBuilderFactoryInterface $viewBuilderFactory,
         private readonly LocalizationManagerInterface $localizationManager,
+        private readonly bool $enabled,
         array $resourceConfig,
     ) {
         $this->resourceRegistry = new ResourceRegistry($resourceConfig);
@@ -30,6 +31,10 @@ final class ContentImportExportAdmin extends Admin
 
     public function configureViews(ViewCollection $viewCollection): void
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $locales = $this->normalizeLocales($this->localizationManager->getLocales());
 
         foreach ($this->resourceRegistry->all() as $definition) {
@@ -62,7 +67,7 @@ final class ContentImportExportAdmin extends Admin
     {
         return $this->viewBuilderFactory
             ->createViewBuilder('sulu_content_import_export.' . $viewSuffix, '/export-import', 'sulu_content_import_export')
-            ->setOption('tabTitle', 'Export / Import')
+            ->setOption('tabTitle', 'sulu_content_import_export.export_import')
             ->setOption('tabOrder', 9999)
             ->setOption('urlPrefix', $definition->getUrlPrefix())
             ->setOption('contentName', $definition->getContentName())

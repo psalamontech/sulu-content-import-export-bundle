@@ -23,7 +23,7 @@ Quick summary:
         { "type": "vcs", "url": "git@github.com:your-org/sulu-content-import-export-bundle.git" }
     ],
     "require": {
-        "psalamon/sulu-content-import-export-bundle": "^0.1.0"
+        "psalamontech/sulu-content-import-export-bundle": "^0.1.0"
     }
 }
 ```
@@ -33,6 +33,7 @@ After `composer require`:
 ```bash
 bin/console sulu-content-import-export:install
 cd assets/admin && npm run build
+bin/adminconsole cache:clear
 ```
 
 The install command creates the routes file, patches `webpack.config.js`, and adds the JS import automatically.
@@ -46,6 +47,7 @@ All resources are enabled by default. Override only when needed:
 ```yaml
 # config/packages/sulu_content_import_export.yaml
 sulu_content_import_export:
+    enabled: true
     resources:
         page:
             enabled: true
@@ -57,6 +59,8 @@ sulu_content_import_export:
 ```
 
 Article support activates only when `sulu/article-bundle` is installed.
+
+Set `SULU_CONTENT_IMPORT_EXPORT_ENABLED=false` in the host application's environment to disable the bundle without removing the package.
 
 ## API endpoints
 

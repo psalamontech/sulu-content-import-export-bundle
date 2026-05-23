@@ -93,7 +93,7 @@ YAML;
         ...(config.resolve.alias || {}),
         'sulu-content-import-export-bundle': path.resolve(
             __dirname,
-            '../../vendor/psalamon/sulu-content-import-export-bundle/assets/admin'
+            '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
         ),
     };
     config.resolve.modules = [

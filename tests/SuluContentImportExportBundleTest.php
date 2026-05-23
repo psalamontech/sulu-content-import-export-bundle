@@ -16,5 +16,7 @@ final class SuluContentImportExportBundleTest extends TestCase
 
         self::assertStringEndsWith('sulu-content-import-export-bundle', $path);
         self::assertFileExists($path . '/config/routes_admin.yaml');
+        self::assertFileExists($path . '/Resources/translations/admin.en.json');
+        self::assertFileExists($path . '/Resources/translations/admin.de.json');
     }
 }

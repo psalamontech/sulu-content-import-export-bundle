@@ -15,6 +15,9 @@ final class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
+                ->booleanNode('enabled')
+                    ->defaultTrue()
+                ->end()
                 ->scalarNode('csrf_token_id')
                     ->defaultValue('sulu_content_import_export')
                 ->end()

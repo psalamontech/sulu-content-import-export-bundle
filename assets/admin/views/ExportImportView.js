@@ -1046,7 +1046,7 @@ class ExportImportView extends React.Component {
                     <div style={styles.metaInner}>
                         <div>
                             <div style={styles.titleWrap}>
-                                <span style={styles.title}>Export / Import</span>
+                                <span style={styles.title}>{translate('sulu_content_import_export.export_import')}</span>
                                 <span style={styles.subtitle}>{this.structureLabel}</span>
                                 <span style={styles.locale}>[{this.payloadLocale || this.locale}]</span>
                             </div>

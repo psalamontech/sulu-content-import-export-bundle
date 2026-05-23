@@ -1,5 +1,5 @@
 {
-    "name": "psalamon/sulu-content-import-export-bundle",
+    "name": "psalamontech/sulu-content-import-export-bundle",
     "description": "JSON export/import admin tab for Sulu pages, snippets, and articles.",
     "type": "symfony-bundle",
     "license": "MIT",

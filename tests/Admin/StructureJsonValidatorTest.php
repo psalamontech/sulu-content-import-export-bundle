@@ -32,10 +32,23 @@ final class StructureJsonValidatorTest extends TestCase
             'isRequired' => true,
         ]);
 
-        $component = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['getChildren'])
-            ->getMock();
-        $component->method('getChildren')->willReturn([$nestedChild]);
+        $component = new class([$nestedChild]) {
+            /**
+             * @param array<int, mixed> $children
+             */
+            public function __construct(
+                private readonly array $children,
+            ) {
+            }
+
+            /**
+             * @return array<int, mixed>
+             */
+            public function getChildren(): array
+            {
+                return $this->children;
+            }
+        };
 
         $block = $this->createConfiguredMock(PropertyMetadata::class, [
             'getName' => 'sections',

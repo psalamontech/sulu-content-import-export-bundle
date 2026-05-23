@@ -13,6 +13,7 @@ services:
 
     SuluContentImportExportBundle\Admin\ContentImportExportAdmin:
         arguments:
+            $enabled: '%sulu_content_import_export.enabled%'
             $resourceConfig: '%sulu_content_import_export.resources%'
 
     SuluContentImportExportBundle\Controller\Admin\ContentJsonController:

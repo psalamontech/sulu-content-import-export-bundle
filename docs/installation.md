@@ -13,7 +13,7 @@ Add the repository and package requirement to the host application's `composer.j
         }
     ],
     "require": {
-        "psalamon/sulu-content-import-export-bundle": "^0.1.0"
+        "psalamontech/sulu-content-import-export-bundle": "^0.1.0"
     }
 }
 ```
@@ -57,7 +57,7 @@ config.resolve.alias = {
     ...(config.resolve.alias || {}),
     'sulu-content-import-export-bundle': path.resolve(
         __dirname,
-        '../../vendor/psalamon/sulu-content-import-export-bundle/assets/admin'
+        '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
     ),
 };
 config.resolve.modules = [
@@ -81,6 +81,7 @@ The bundle automatically configures stateless CSRF protection via `prepend()`. N
 ```yaml
 # config/packages/sulu_content_import_export.yaml
 sulu_content_import_export:
+    enabled: true
     resources:
         page:
             enabled: true
@@ -94,3 +95,19 @@ sulu_content_import_export:
 All resources are enabled by default. Omit this file entirely if the defaults are acceptable.
 
 The language switcher uses the locales registered in the Sulu system, not a separate bundle-specific locale list.
+
+## Disable via environment variable
+
+To disable the bundle without removing the Composer package, set:
+
+```bash
+SULU_CONTENT_IMPORT_EXPORT_ENABLED=false
+```
+
+This prevents the bundle services and admin tab from being registered.
+
+After rebuilding admin assets, clear the admin cache so Sulu picks up the new routes and configuration:
+
+```bash
+bin/adminconsole cache:clear
+```
