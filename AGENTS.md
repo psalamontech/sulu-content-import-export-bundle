@@ -57,7 +57,7 @@ No database or running Sulu instance needed. The controller test uses in-memory 
 - **Bundle can be disabled globally.** `SULU_CONTENT_IMPORT_EXPORT_ENABLED=false` disables the bundle at container build time: no CSRF prepend, no service registration, no admin tab. Keep any future feature behind this global switch as well.
 - **Article is conditional.** `class_exists(ArticleAdmin::class)` gates article support at container build time. Any article-related code must stay behind this check.
 - **`getPath()` override is intentional.** Symfony's default path resolution breaks for bundles installed via Composer VCS. The override in `SuluContentImportExportBundle::getPath()` returns `dirname(__DIR__)` (the package root). Do not remove it.
-- **No host node_modules in vendor.** Bundle ships JS source only. Host compiles. The webpack alias + `resolve.modules` in the host config makes `sulu-admin-bundle/*` imports resolve to the host's `node_modules`.
+- **No host node_modules in vendor.** Bundle ships JS source only. Host compiles. The install flow injects an `applySuluContentImportExportConfig(config)` helper into the host `webpack.config.js`; that helper owns the bundle alias plus `resolve.modules` wiring so `sulu-admin-bundle/*` imports resolve to the host's `node_modules`.
 - **Admin labels must use Sulu translations.** Do not hardcode visible admin UI strings like the Export/Import tab title; use translation keys backed by `Resources/translations/admin.*.json`.
 
 ## What to avoid

@@ -14,7 +14,7 @@ Adds an **Export / Import** tab to each content document in the Sulu admin. The 
 
 See [docs/installation.md](docs/installation.md) for the full step-by-step guide.
 
-Uninstall notes are also documented there. `composer remove` does not automatically revert the route file, JS import, or webpack alias added in the host project.
+Uninstall notes are also documented there. `composer remove` does not automatically revert the route file, JS import, or webpack helper added in the host project.
 
 Quick summary:
 
@@ -38,7 +38,7 @@ cd assets/admin && npm run build
 bin/adminconsole cache:clear
 ```
 
-The install command creates the routes file, patches `webpack.config.js`, and adds the JS import automatically.
+The install command creates the routes file, injects a small helper into `webpack.config.js`, and adds the JS import automatically.
 
 CSRF protection is configured automatically — no manual `config/packages/csrf.yaml` needed.
 

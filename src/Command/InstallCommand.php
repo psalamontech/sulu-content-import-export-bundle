@@ -88,6 +88,7 @@ YAML;
 
         $alias = <<<'JS'
 
+function applySuluContentImportExportConfig(config) {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
         ...(config.resolve.alias || {}),
@@ -100,6 +101,9 @@ YAML;
         path.resolve(__dirname, 'node_modules'),
         ...(config.resolve.modules || ['node_modules']),
     ];
+}
+
+applySuluContentImportExportConfig(config);
 
 JS;
 
@@ -113,7 +117,7 @@ JS;
 
         $content = substr($content, 0, $lastReturn) . $alias . substr($content, $lastReturn);
         file_put_contents($path, $content);
-        $io->writeln('<info>Added webpack alias to assets/admin/webpack.config.js</info>');
+        $io->writeln('<info>Added Sulu Content Import/Export webpack helper to assets/admin/webpack.config.js</info>');
 
         return true;
     }

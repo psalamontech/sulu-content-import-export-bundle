@@ -28,7 +28,7 @@ After `composer require`, run the install command from the host application root
 bin/console sulu-content-import-export:install
 ```
 
-This creates `config/routes/sulu_content_import_export.yaml`, patches `assets/admin/webpack.config.js` with the required alias, and adds the JS import to `assets/admin/app.js` (or `index.js`). The command is idempotent — safe to run multiple times.
+This creates `config/routes/sulu_content_import_export.yaml`, injects a small helper into `assets/admin/webpack.config.js`, and adds the JS import to `assets/admin/app.js` (or `index.js`). The command is idempotent — safe to run multiple times.
 
 Then rebuild the admin assets:
 
@@ -49,21 +49,24 @@ sulu_content_import_export:
     resource: '@SuluContentImportExportBundle/config/routes_admin.yaml'
 ```
 
-Add a webpack alias and module resolution path in `assets/admin/webpack.config.js` before `return config;`:
+Add a small helper function in `assets/admin/webpack.config.js`, then call it before `return config;`:
 
 ```js
-config.resolve = config.resolve || {};
-config.resolve.alias = {
-    ...(config.resolve.alias || {}),
-    'sulu-content-import-export-bundle': path.resolve(
-        __dirname,
-        '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
-    ),
-};
-config.resolve.modules = [
-    path.resolve(__dirname, 'node_modules'),
-    ...(config.resolve.modules || ['node_modules']),
-];
+function applySuluContentImportExportConfig(config) {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        'sulu-content-import-export-bundle': path.resolve(
+            __dirname,
+            '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
+        ),
+    };
+    config.resolve.modules = [
+        path.resolve(__dirname, 'node_modules'),
+        ...(config.resolve.modules || ['node_modules']),
+    ];
+}
+applySuluContentImportExportConfig(config);
 ```
 
 The `resolve.modules` entry ensures that `sulu-admin-bundle` imports inside the bundle's vendor files resolve to the host's `node_modules` directory.
@@ -120,21 +123,25 @@ After removing the package, clean up the host application manually:
 
 1. Remove `config/routes/sulu_content_import_export.yaml`.
 2. Remove `import 'sulu-content-import-export-bundle/app';` from `assets/admin/app.js` or `assets/admin/index.js`.
-3. Remove the bundle alias and `resolve.modules` block from `assets/admin/webpack.config.js`:
+3. Remove the helper call and helper function from `assets/admin/webpack.config.js`:
 
 ```js
-config.resolve = config.resolve || {};
-config.resolve.alias = {
-    ...(config.resolve.alias || {}),
-    'sulu-content-import-export-bundle': path.resolve(
-        __dirname,
-        '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
-    ),
-};
-config.resolve.modules = [
-    path.resolve(__dirname, 'node_modules'),
-    ...(config.resolve.modules || ['node_modules']),
-];
+applySuluContentImportExportConfig(config);
+
+function applySuluContentImportExportConfig(config) {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        'sulu-content-import-export-bundle': path.resolve(
+            __dirname,
+            '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
+        ),
+    };
+    config.resolve.modules = [
+        path.resolve(__dirname, 'node_modules'),
+        ...(config.resolve.modules || ['node_modules']),
+    ];
+}
 ```
 
 4. Remove any optional bundle config you added, for example `config/packages/sulu_content_import_export.yaml`.
