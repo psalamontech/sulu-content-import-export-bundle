@@ -42,6 +42,8 @@ The install command creates the routes file, injects a small top-level helper in
 
 CSRF protection is configured automatically — no manual `config/packages/csrf.yaml` needed.
 
+If the host project uses Symfony `AssetMapper` with `framework.asset_mapper.paths: [assets/]`, exclude `assets/admin/**` from AssetMapper scanning. Sulu admin assets are built separately with the admin webpack build and can trigger import resolution errors if Symfony tries to parse them.
+
 ## Configuration
 
 All resources are enabled by default. Override only when needed:

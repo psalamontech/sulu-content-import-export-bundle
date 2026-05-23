@@ -38,6 +38,34 @@ cd assets/admin && npm run build
 
 Do not use `bin/adminconsole sulu:admin:update-build` — it prompts to overwrite your customised `webpack.config.js` and `app.js`, and fails with `npm: not found` if you decline.
 
+## AssetMapper note
+
+`assets/admin` is part of Sulu's separate admin webpack build. It is not meant to be scanned by Symfony `AssetMapper` or `importmap`.
+
+If the host application has:
+
+```yaml
+framework:
+    asset_mapper:
+        paths:
+            - assets/
+```
+
+exclude `assets/admin/**` from AssetMapper scanning:
+
+```yaml
+# config/packages/asset_mapper.yaml
+framework:
+    asset_mapper:
+        paths:
+            - assets/
+        excluded_patterns:
+            - '*/assets/admin/*'
+            - '*/assets/admin/**/*'
+```
+
+Without this exclusion, Symfony can try to parse Sulu admin `node_modules` imports and fail on paths that are only valid inside the webpack-based admin build, for example `../../../containers/RestoreFormOverlay` from `sulu-trash-bundle`.
+
 ## Manual setup (alternative)
 
 If Symfony Flex does not register the bundle automatically, add `SuluContentImportExportBundle\\SuluContentImportExportBundle` to the host application's bundle config.
