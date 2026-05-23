@@ -49,7 +49,7 @@ sulu_content_import_export:
     resource: '@SuluContentImportExportBundle/config/routes_admin.yaml'
 ```
 
-Add a small helper function in `assets/admin/webpack.config.js`, then call it before `return config;`:
+Add a small helper function at top level in `assets/admin/webpack.config.js`, then call it before `return config;` inside `module.exports`:
 
 ```js
 function applySuluContentImportExportConfig(config) {
@@ -66,7 +66,13 @@ function applySuluContentImportExportConfig(config) {
         ...(config.resolve.modules || ['node_modules']),
     ];
 }
-applySuluContentImportExportConfig(config);
+
+module.exports = (env, argv) => {
+    // existing config setup
+    applySuluContentImportExportConfig(config);
+
+    return config;
+};
 ```
 
 The `resolve.modules` entry ensures that `sulu-admin-bundle` imports inside the bundle's vendor files resolve to the host's `node_modules` directory.
@@ -123,11 +129,9 @@ After removing the package, clean up the host application manually:
 
 1. Remove `config/routes/sulu_content_import_export.yaml`.
 2. Remove `import 'sulu-content-import-export-bundle/app';` from `assets/admin/app.js` or `assets/admin/index.js`.
-3. Remove the helper call and helper function from `assets/admin/webpack.config.js`:
+3. Remove the top-level helper function and the helper call from `assets/admin/webpack.config.js`:
 
 ```js
-applySuluContentImportExportConfig(config);
-
 function applySuluContentImportExportConfig(config) {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
@@ -142,6 +146,13 @@ function applySuluContentImportExportConfig(config) {
         ...(config.resolve.modules || ['node_modules']),
     ];
 }
+
+module.exports = (env, argv) => {
+    // existing config setup
+    applySuluContentImportExportConfig(config);
+
+    return config;
+};
 ```
 
 4. Remove any optional bundle config you added, for example `config/packages/sulu_content_import_export.yaml`.

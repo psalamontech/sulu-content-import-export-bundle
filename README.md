@@ -38,7 +38,7 @@ cd assets/admin && npm run build
 bin/adminconsole cache:clear
 ```
 
-The install command creates the routes file, injects a small helper into `webpack.config.js`, and adds the JS import automatically.
+The install command creates the routes file, injects a small top-level helper into `webpack.config.js`, and adds the JS import automatically.
 
 CSRF protection is configured automatically — no manual `config/packages/csrf.yaml` needed.
 

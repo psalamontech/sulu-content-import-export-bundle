@@ -86,7 +86,7 @@ YAML;
             return true;
         }
 
-        $alias = <<<'JS'
+        $helperFunction = <<<'JS'
 
 function applySuluContentImportExportConfig(config) {
     config.resolve = config.resolve || {};
@@ -103,19 +103,31 @@ function applySuluContentImportExportConfig(config) {
     ];
 }
 
+JS;
+
+        $helperCall = <<<'JS'
+
 applySuluContentImportExportConfig(config);
 
 JS;
 
-        // Insert before the last `return config;`
-        $lastReturn = strrpos($content, 'return config;');
-        if (false === $lastReturn) {
-            $io->warning('Could not locate "return config;" in webpack.config.js. Add the webpack alias manually (see docs/installation.md).');
+        $moduleExports = 'module.exports';
+        $moduleExportsPosition = strpos($content, $moduleExports);
+        if (false === $moduleExportsPosition) {
+            $io->warning('Could not locate "module.exports" in webpack.config.js. Add the webpack helper manually (see docs/installation.md).');
 
             return false;
         }
 
-        $content = substr($content, 0, $lastReturn) . $alias . substr($content, $lastReturn);
+        $lastReturn = strrpos($content, 'return config;');
+        if (false === $lastReturn) {
+            $io->warning('Could not locate "return config;" in webpack.config.js. Add the webpack helper manually (see docs/installation.md).');
+
+            return false;
+        }
+
+        $content = substr($content, 0, $moduleExportsPosition) . $helperFunction . substr($content, $moduleExportsPosition);
+        $content = substr($content, 0, $lastReturn + strlen($helperFunction)) . $helperCall . substr($content, $lastReturn + strlen($helperFunction));
         file_put_contents($path, $content);
         $io->writeln('<info>Added Sulu Content Import/Export webpack helper to assets/admin/webpack.config.js</info>');
 
