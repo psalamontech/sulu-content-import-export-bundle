@@ -14,6 +14,8 @@ Adds an **Export / Import** tab to each content document in the Sulu admin. The 
 
 See [docs/installation.md](docs/installation.md) for the full step-by-step guide.
 
+Uninstall notes are also documented there. `composer remove` does not automatically revert the route file, JS import, or webpack alias added in the host project.
+
 Quick summary:
 
 ```json
@@ -80,7 +82,7 @@ composer install
 ./vendor/bin/phpunit
 ```
 
-Tests: 28 / Assertions: 131.
+Tests: 30 / Assertions: 140.
 
 ## Docs
 

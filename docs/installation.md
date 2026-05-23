@@ -111,3 +111,39 @@ After rebuilding admin assets, clear the admin cache so Sulu picks up the new ro
 ```bash
 bin/adminconsole cache:clear
 ```
+
+## Uninstall
+
+`composer remove` removes the package from `vendor/`, but it does not revert the files patched by `bin/console sulu-content-import-export:install`.
+
+After removing the package, clean up the host application manually:
+
+1. Remove `config/routes/sulu_content_import_export.yaml`.
+2. Remove `import 'sulu-content-import-export-bundle/app';` from `assets/admin/app.js` or `assets/admin/index.js`.
+3. Remove the bundle alias and `resolve.modules` block from `assets/admin/webpack.config.js`:
+
+```js
+config.resolve = config.resolve || {};
+config.resolve.alias = {
+    ...(config.resolve.alias || {}),
+    'sulu-content-import-export-bundle': path.resolve(
+        __dirname,
+        '../../vendor/psalamontech/sulu-content-import-export-bundle/assets/admin'
+    ),
+};
+config.resolve.modules = [
+    path.resolve(__dirname, 'node_modules'),
+    ...(config.resolve.modules || ['node_modules']),
+];
+```
+
+4. Remove any optional bundle config you added, for example `config/packages/sulu_content_import_export.yaml`.
+5. Rebuild the admin assets.
+6. Clear the admin cache.
+
+```bash
+cd assets/admin && npm run build
+bin/adminconsole cache:clear
+```
+
+If the host project edited the same files manually after installation, remove only the bundle-specific lines and keep the surrounding custom logic intact.
