@@ -64,6 +64,8 @@ sulu_content_import_export:
 
 Article support activates only when `sulu/article-bundle` is installed.
 
+The page tab is shown when the user can edit pages in at least one webspace. The snippet tab is shown when the user has the global snippet edit permission. These match the permissions Sulu requires to register the parent edit views.
+
 Set `SULU_CONTENT_IMPORT_EXPORT_ENABLED=false` in the host application's environment to disable the bundle without removing the package.
 
 ## API endpoints
@@ -84,7 +86,7 @@ composer install
 ./vendor/bin/phpunit
 ```
 
-Tests: 30 / Assertions: 140.
+Tests: 33 / Assertions: 152.
 
 ## Docs
 

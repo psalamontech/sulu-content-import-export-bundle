@@ -11,6 +11,9 @@ use Sulu\Bundle\ArticleBundle\Admin\ArticleAdmin;
 use Sulu\Bundle\PageBundle\Admin\PageAdmin;
 use Sulu\Bundle\SnippetBundle\Admin\SnippetAdmin;
 use Sulu\Component\Localization\Manager\LocalizationManagerInterface;
+use Sulu\Component\Security\Authorization\PermissionTypes;
+use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
+use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use SuluContentImportExportBundle\Resource\ResourceRegistry;
 
 final class ContentImportExportAdmin extends Admin
@@ -21,6 +24,8 @@ final class ContentImportExportAdmin extends Admin
     public function __construct(
         private readonly ViewBuilderFactoryInterface $viewBuilderFactory,
         private readonly LocalizationManagerInterface $localizationManager,
+        private readonly SecurityCheckerInterface $securityChecker,
+        private readonly WebspaceManagerInterface $webspaceManager,
         private readonly bool $enabled,
         array $resourceConfig,
     ) {
@@ -42,12 +47,12 @@ final class ContentImportExportAdmin extends Admin
                 continue;
             }
 
-            if ('page' === $definition->getName()) {
+            if ('page' === $definition->getName() && $this->hasEditableWebspace()) {
                 $viewCollection->add($this->buildView($definition->getName(), PageAdmin::EDIT_FORM_VIEW, $definition, $locales));
                 continue;
             }
 
-            if ('snippet' === $definition->getName()) {
+            if ('snippet' === $definition->getName() && $this->securityChecker->hasPermission(SnippetAdmin::SECURITY_CONTEXT, PermissionTypes::EDIT)) {
                 $viewCollection->add($this->buildView($definition->getName(), SnippetAdmin::EDIT_FORM_VIEW, $definition, $locales));
                 continue;
             }
@@ -58,6 +63,20 @@ final class ContentImportExportAdmin extends Admin
                 }
             }
         }
+    }
+
+    private function hasEditableWebspace(): bool
+    {
+        foreach ($this->webspaceManager->getWebspaceCollection()->getWebspaces() as $webspace) {
+            if ($this->securityChecker->hasPermission(
+                PageAdmin::getPageSecurityContext($webspace->getKey()),
+                PermissionTypes::EDIT,
+            )) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
